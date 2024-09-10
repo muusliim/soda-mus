@@ -9,6 +9,8 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import { Bounded } from "@/components/Bounded";
 import Button from "@/components/Button";
 import { TextSplitter } from "@/components/TextSplitter";
+import { View } from "@react-three/drei";
+import Scene from "./Scene";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 /**
@@ -78,36 +80,19 @@ const Hero = ({ slice }: HeroProps): JSX.Element => {
         },
         1.5,
       )
-      .fromTo(
-        ".text-side-heading .split-char",
-        {
-          opacity: 0,
-          x: -50,
-          y: -50,
-        },
-        {
-          opacity: 1,
-          x: 0,
-          y: 0,
-          stagger: 0.2,
-          overwrite: "auto",
-        },
-      )
-      .fromTo(
-        ".text-side-body",
-        {
-          opacity: 0,
-          x: -50,
-          y: -50,
-        },
-        {
-          opacity: 1,
-          x: 0,
-          y: 0,
-          stagger: 0.2,
-          overwrite: "auto",
-        },
-      );
+      .from(".text-side-heading .split-char", {
+        opacity: 0,
+        scale: 1.3,
+        stagger: 0.2,
+        y: 45,
+        rotate: -20,
+        duration: 0.7,
+        ease: "elastic.out(1, 0.5)",
+      })
+      .from(".text-side-body", {
+        opacity: 0,
+        y: 25,
+      });
   });
 
   return (
@@ -116,20 +101,23 @@ const Hero = ({ slice }: HeroProps): JSX.Element => {
       data-slice-variation={slice.variation}
       className="hero opacity-0"
     >
+      <View className="hero-scene pointer-events-none sticky top-0 z-50 -mt-[100vh] hidden h-screen w-screen md:block">
+        <Scene />
+      </View>
       <div className="grid">
         <div className="grid h-screen place-items-center">
           <div className="grid auto-rows-min place-items-center text-center">
-            <h1 className="hero-header text-8xl font-black uppercase leading-[.9] text-orange-500 max-md:ml-1 md:text-[9rem  max-md:pl-3 lg:text-[12rem]">
+            <h1 className="hero-header text-8xl font-black uppercase leading-[.9] text-orange-500 max-md:ml-1 max-md:pl-3 md:pl-[1.6rem] md:text-[9rem] lg:text-[10rem]">
               <TextSplitter
                 text={asText(slice.primary.heading)}
                 wordDisplayStyle="block"
                 className="hero-header-word"
               />
             </h1>
-            <p className="hero-subheading font-lora mt-12 text-5xl font-semibold text-sky-950 lg:text-6xl">
+            <p className="hero-subheading mt-12 font-lora text-5xl font-semibold text-sky-950 lg:text-6xl">
               {asText(slice.primary.subheading)}
             </p>
-            <p className="hero-body font-lora mt-3 text-2xl font-normal text-sky-950">
+            <p className="hero-body mt-3 font-lora text-2xl font-normal text-sky-950">
               {asText(slice.primary.body)}
             </p>
             <Button
@@ -146,7 +134,7 @@ const Hero = ({ slice }: HeroProps): JSX.Element => {
             field={slice.primary.cans_image}
           />
           <div>
-            <h2 className="text-side-heading font-lora text-balance text-6xl max-md:text-5xl font-black uppercase text-sky-950 lg:text-8xl">
+            <h2 className="text-side-heading max-md:text-5mpxl text-balance font-lora text-6xl font-black uppercase text-sky-950 lg:text-8xl">
               <TextSplitter text={asText(slice.primary.second_heading)} />
             </h2>
             <div className="text-side-body mt-4 max-w-xl text-balance text-xl font-normal text-sky-950">
