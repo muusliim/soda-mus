@@ -9,10 +9,13 @@ import { Group } from "three";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import { useStore } from "@/hooks/useStore";
+
 
 type Props = {};
 
 export default function Scene({}: Props) {
+  const isReady = useStore((state) => state.isReady);
   gsap.registerPlugin(useGSAP, ScrollTrigger);
 
   const can1Ref = useRef<Group>(null);
@@ -40,6 +43,9 @@ export default function Scene({}: Props) {
       !can5Ref.current
     )
       return;
+
+      isReady()
+
     // стартовая позиция банок
     gsap.set(can1Ref.current.position, { x: -1.5 });
     gsap.set(can1Ref.current.rotation, { z: -0.5 });
@@ -98,7 +104,7 @@ export default function Scene({}: Props) {
       .to(can5Ref.current.rotation, { z: -0.25 }, 0)
       .to(
         groupRef.current.position,
-        { x: 1, duration: 3, ease: "sine.inOut" },
+        { x: 1, y:0.1, duration: 3, ease: "sine.inOut" },
         1.3,
       );
   });
