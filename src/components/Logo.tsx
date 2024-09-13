@@ -9,7 +9,7 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
       width="166"
       height="100"
       fill="none"
-      viewBox="0 0 166 87"
+      viewBox="44 0 166 87"
       className={clsx("group", props.className)}
       aria-labelledby="logo-title"
     >

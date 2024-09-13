@@ -1,7 +1,7 @@
 import { SVGProps } from "react";
 import clsx from "clsx";
 
-export function FizziLogo(props: SVGProps<SVGSVGElement>) {
+export function IzziLogo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -9,11 +9,11 @@ export function FizziLogo(props: SVGProps<SVGSVGElement>) {
       width="166"
       height="87"
       fill="none"
-      viewBox="0 0 166 87"
+      viewBox="37 0 166 87"
       className={clsx("group", props.className)}
-      aria-labelledby="fizzi-logo-title"
+      aria-labelledby="izzi-logo-title"
     >
-      <title id="fizzi-logo-title">Fizzi</title>
+      <title id="izzi-logo-title">izzi</title>
       <g clipPath="url(#clip0_342_66)">
         <mask
           id="mask0_342_66"
