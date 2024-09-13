@@ -146,8 +146,8 @@ const Hero = ({ slice }: HeroProps): JSX.Element => {
             className="w-full md:hidden"
             field={slice.primary.cans_image}
           />
-          <div>
-            <h2 className="text-side-heading max-md:text-5mpxl text-balance font-lora text-6xl font-black uppercase text-sky-950 lg:text-8xl">
+          <div className="grid place-items-center text-center px-3 ">
+            <h2 className="text-side-heading max-md:text-5xl text-balance font-lora text-6xl font-black uppercase text-sky-950 lg:text-8xl">
               <TextSplitter text={asText(slice.primary.second_heading)} />
             </h2>
             <div className="text-side-body mt-4 max-w-xl text-balance text-xl font-normal text-sky-950">

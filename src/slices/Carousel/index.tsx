@@ -26,7 +26,7 @@ const FLAVORS: {
 }[] = [
   { flavor: "blackCherry", color: "#710523", name: "Вишневое Настроение" },
   { flavor: "grape", color: "#572981", name: "Виноградный Сюрприз" },
-  { flavor: "lemonLime", color: "#164405", name: "Лимонно-Лаймовый Кайф" },
+  { flavor: "lemonLime", color: "#164405", name: "Лимон-Лайм-Кайф" },
   {
     flavor: "strawberryLemonade",
     color: "#690B3D",
@@ -85,7 +85,7 @@ const Carousel = ({ slice }: CarouselProps): JSX.Element => {
     <section
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="carousel grid-rows-[auto, 4fr, auto] relative grid h-screen justify-center overflow-hidden bg-white py-12 text-white"
+      className="carousel grid-rows-[auto, 4fr, auto] w-full relative grid h-screen justify-center overflow-hidden bg-white py-12 text-white"
     >
       <div className="background pointer-events-none absolute inset-0 bg-[#710523] opacity-50" />
       <WavyCircles className="absolute left-1/2 top-1/2 h-[120vmin] -translate-x-1/2 -translate-y-1/2 text-[#710523]" />
