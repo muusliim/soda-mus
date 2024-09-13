@@ -1,28 +1,158 @@
 "use client";
 
 import FloatingCan from "@/components/FloatingCan";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Content } from "@prismicio/client";
-import { Cloud, Clouds, Environment, OrbitControls } from "@react-three/drei";
+import { Cloud, Clouds, Environment, SpotLight, Text } from "@react-three/drei";
 import { useRef } from "react";
 import * as THREE from "three";
+
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import ScrollTrigger from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 type SkyDiveProps = {
   sentence: string | null;
   flavor: Content.SkyDiveSliceDefaultPrimary["flavor"];
 };
 
-export default function Scene({sentence, flavor}: SkyDiveProps) {
+export default function Scene({ sentence, flavor }: SkyDiveProps) {
   const groupRef = useRef<THREE.Group>(null);
   const canRef = useRef<THREE.Group>(null);
   const cloud1Ref = useRef<THREE.Group>(null);
   const cloud2Ref = useRef<THREE.Group>(null);
   const cloudsRef = useRef<THREE.Group>(null);
   const wordsRef = useRef<THREE.Group>(null);
+
+  const ANGLE = 75 * (Math.PI / 180);
+  const getXPosition = (distance: number) => distance * Math.cos(ANGLE);
+
+  const getYPosition = (distance: number) => distance * Math.sin(ANGLE);
+
+  const getXYPosition = (distance: number) => ({
+    x: getXPosition(distance),
+    y: getYPosition(-1 * distance),
+  });
+
+  useGSAP(() => {
+    if (
+      !canRef.current ||
+      !cloud1Ref.current ||
+      !cloud2Ref.current ||
+      !cloudsRef.current ||
+      !wordsRef.current
+    )
+      return;
+
+    gsap.set(cloudsRef.current.position, { z: 10 });
+    gsap.set(canRef.current.position, { ...getXYPosition(-4) });
+    gsap.set(
+      wordsRef.current.children.map((w) => w.position),
+      { ...getXYPosition(7), z: 2 },
+    );
+    gsap.to(canRef.current.rotation, {
+      y: Math.PI * 2,
+      duration: 1.7,
+      repeat: -1,
+      ease: "none",
+    });
+
+    const DISTANCE = 15;
+    const DURATION = 6;
+    gsap.set([cloud2Ref.current.position, cloud1Ref.current.position], {
+      ...getXYPosition(DISTANCE),
+    });
+
+    gsap.to(cloud1Ref.current.position, {
+      y: `+=${getYPosition(DISTANCE * 2)}`,
+      x: `+=${getXPosition(DISTANCE * -2)}`,
+      ease: "none",
+      repeat: -1,
+      duration: DURATION,
+    });
+
+    gsap.to(cloud2Ref.current.position, {
+      y: `+=${getYPosition(DISTANCE * 2)}`,
+      x: `+=${getXPosition(DISTANCE * -2)}`,
+      ease: "none",
+      repeat: -1,
+      duration: DURATION,
+      delay: DURATION / 2,
+    });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".skydive",
+        pin: true,
+        start: "top top",
+        end: "+=2000",
+        scrub: 1.5,
+      },
+    });
+
+    tl.to("body", {
+      backgroundColor: "#C0F0F5",
+      overwrite: "auto",
+      duration: 0.1,
+    })
+      .to(
+        cloudsRef.current.position,
+        {
+          z: 0,
+          duration: 0.3,
+        },
+        0,
+      )
+      .to(canRef.current.position, {
+        y: 0,
+        x: 0,
+        ease: "back.out(1.5)",
+        duration: 0.3,
+      })
+      .to(
+        wordsRef.current.children.map((w) => w.position),
+        {
+          keyframes: [
+            {
+              y: 0,
+              x: 0,
+              z: -1,
+            },
+            { ...getXYPosition(-7), z: -7 },
+          ],
+          stagger: 0.3,
+        },
+        0,
+      )
+      .to(canRef.current.position, {
+        ...getXYPosition(4),
+        duration: 0.8,
+        ease: "back.in(1.7)",
+      })
+      .to(cloudsRef.current.position, {
+        z: 10,
+        duration: 0.3,
+      });
+  });
   return (
     <group>
       {/* can */}
       <group rotation={[0, 0, 0.5]}>
-        <FloatingCan ref={canRef} flavor={flavor}></FloatingCan>
+        <FloatingCan
+          ref={canRef}
+          flavor={flavor}
+          rotationIntensity={0}
+          floatIntensity={3}
+          floatSpeed={3}
+        >
+          <pointLight
+            intensity={30}
+            color="#8C0413"
+            decay={0.6}
+          />
+        </FloatingCan>
       </group>
 
       {/* clouds */}
@@ -32,9 +162,42 @@ export default function Scene({sentence, flavor}: SkyDiveProps) {
       </Clouds>
 
       {/* text */}
+      <group ref={wordsRef}>
+        {sentence && <ThreeText sentence={sentence} color="#F97315" />}
+      </group>
+
       {/* light */}
       <ambientLight intensity={2} color="#a2ddf7" />
       <Environment files="/hdr/field.hdr" environmentIntensity={1.5} />
     </group>
   );
+}
+
+function ThreeText({
+  sentence,
+  color = "white",
+}: {
+  sentence: string;
+  color?: string;
+}) {
+  const words = sentence.toUpperCase().split(" ");
+  const material = new THREE.MeshLambertMaterial();
+  const isDesktop = useMediaQuery("(min-width: 950px)", true);
+
+  return words.map((word: string, index: number) => {
+    return (
+      <Text
+        key={`${index}-${word}`}
+        scale={isDesktop ? 1 : 0.4}
+        color={color}
+        material={material}
+        font="/fonts/Alpino-Variable.woff"
+        fontWeight={900}
+        anchorX={"center"}
+        anchorY={"middle"}
+      >
+        {word}
+      </Text>
+    );
+  });
 }
